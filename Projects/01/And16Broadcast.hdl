@@ -8,7 +8,7 @@ CHIP And16Broadcast {
     OUT out[16];
 
     PARTS:
-    Nand(a=a, b=b, out=ab); 
+    Nand16Broadcast(a=a, b=b, out=ab); 
 	Not16(in=ab, out=out);
 
 }
