@@ -1,0 +1,14 @@
+/**
+ * 16-bit Demultiplexor: 
+ * For 16-bit inputs returns: [a, b] = ((sel == 0), [in, 0], [0, in])
+ */
+
+CHIP Dmux16 {
+    IN a[16], sel;
+    OUT a, b;
+
+    PARTS:
+    Not(in=sel, out=notsel);
+    And16Broadcast(a=in, b=notsel, out=a);
+    And16Broadcast(a=in, b=sel, out=b);
+}
