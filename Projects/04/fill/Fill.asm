@@ -17,13 +17,13 @@ M=0
 (CONT)
     @i
     M=0
-    @LOOP1
+    @LOOPY
     KBD;JEQ
     
-    @LOOP2
+    @LOOPT
     0;JEQ
 
-(LOOP1)
+(LOOPY)
     @8191
     D=A
     @i
@@ -42,10 +42,10 @@ M=0
     @i 
     M=M+1
 
-    @LOOP1
+    @LOOPY
     0;JEQ
 
-(LOOP2)
+(LOOPT)
     @8191
     D=A
     @i
@@ -63,6 +63,6 @@ M=0
     @i 
     M=M+1
 
-    @LOOP2
+    @LOOPT
     0;JEQ
  
