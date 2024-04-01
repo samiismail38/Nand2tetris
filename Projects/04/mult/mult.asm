@@ -16,62 +16,50 @@
 // R2=sum;
 
 
-  
-	@i
-	M=0
-
-(CONT)
-    @i
-    M=0
-	@KBD
+   
+	@7
 	D=A
-    @LOOPY
-    D;JEQ
-    
-    @LOOPT
-    0;JEQ
+	@R0
+	M=D
 
-(LOOPY)
-    @8191
-    D=A
+	@6
+	D=A
+	@R1
+	M=D
+
+
+(LOOP)
+    @R0
+    D=M
     @i
     D=D-M
     @CONT
     D;JEQ
 
-
-    @16384
-    D=A
-    @i 
+    @R1
+    D=M
+    @sum
     D=D+M
-    @D
-    M=-1
+    M=D
 
-    @i 
-    M=M+1
-
-    @LOOPY
-    0;JEQ
-
-(LOOPT)
-    @8191
-    D=A
     @i
-    D=D-A
-    @CONT
-    D;JEQ
-
-    @16384
-    D=A
-    @i 
-    D=D+M
-    @D
-    M=0
-     
-    @i 
     M=M+1
-
-    @LOOPT
+    @LOOP
     0;JEQ
+
+
+(CONT)
+    @sum
+    D=M
+    @R2
+    M=D
+    @END
+    0;JEQ
+
+(END)
+    @END
+    0;JEQ
+
+
   
 
