@@ -110,42 +110,108 @@ void output(sym_t *sym_head, asm_n *asm_head){
     add_defaults(sym_t *sym_current);
     char *string; 
     char *address;
+    unsigned int symbol_count=0; 
 
     
 
     while(asm_current!=NULL){
+        
         if(asm_current->assembly[0]=='@'){
+            
             if(isdigit(asm_current->assembly[1])){
                     address=find_symbol(asm_current->assembly[1]);
+
                     if(address==NULL){
-                        add_sym(asm_current->assembly[1], *address, asm_current);
+                        add_sym(asm_current->assembly[1], 16+symbol_count, asm_current);
+                        address=16+symbol_count;
                     }
-                    string=realloc(asm_current->assembly[0], strlen(*address)+1);
+                    string=realloc(asm_current->assembly[0], strlen(address)+1);
                     strcpy('@', string);
-                    strcat(*address, string);
+                    strcat(address, string);
+
+                    
             }
-            a_instruction(sym_head, asm_current);
+            a_instruction(asm_current->assembly);
         }else{
-            c_instuction(sym_head, asm_current);
+            c_instuction(asm_current->assembly);
         }
     asm_current=asm_current->next;
+    }
+
+}
+
+
+unsigned int a_instruction(char *assembly){
+    // removes the @ symbol and converts string to int
+
+    if(assembly[0]=='@'){
+        assembly++;
+    }
+    unsigned int output=(unsigned int)strtol(assembly, NULL, 10);
+   
+    return  output;
+}
+
+unsigned int c_instruction(char *assembly){
+    // 111 a cccccc ddd jjj
+    unsigned int prefix = 111;
+    char *command; 
+    char *destination;
+    char *jump;
+
+    unsigned int comp;
+    unsigned int dest;
+    unsigned int jump;
+    unsigned int a; 
+
+    
+    if(strchr(assembly, '=')!=NULL){
+        jump=0b000;
+        destination=strtok(assembly, '=');
+        command=strtok(NULL, '=');
+    }else{
+        dest=0b000;
+        command=strtok(assembly, ';');
+        destination=strtok(NULL, ';');
+    }
+    
+    if(strchr(command, 'M')!=NULL){
+        a=0b1;
+        *strchr(command, 'M')='A';
     }
 
 
 
 
-
-}
-
-
-unsigned int a_instruction(sym_t *sym_head, asm_n *asm_head){
-
-}
-
-unsigned int c_instruction(sym_t *sym_head, asm_n *asm_head){
-
 }
 
 void add_defaults(sym_t *sym_head){ 
+
+add_sym("R0", 0, sym_head);
+add_sym("R1", 1, sym_head);
+add_sym("R2", 2, sym_head);
+add_sym("R3", 3, sym_head);
+add_sym("R4", 4, sym_head);
+add_sym("R5", 5, sym_head);
+add_sym("R6", 6, sym_head);
+add_sym("R7", 7, sym_head);
+add_sym("R8", 8, sym_head);
+add_sym("R9", 9, sym_head);
+add_sym("R10", 10, sym_head);
+add_sym("R11", 11, sym_head);
+add_sym("R12", 12, sym_head);
+add_sym("R13", 13, sym_head);
+add_sym("R14", 14, sym_head);
+add_sym("R15", 15, sym_head);
+
+add_sym("SP", 0, sym_head);
+add_sym("LCL", 1, sym_head);
+add_sym("ARG", 2, sym_head);
+add_sym("THIS", 3, sym_head);
+add_sym("THAT", 4, sym_head);
+
+add_sym("SCREEN", 16384, sym_head);
+add_sym("KBD", 24576, sym_head);
+
 
 }
