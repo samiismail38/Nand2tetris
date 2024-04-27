@@ -148,6 +148,8 @@ unsigned int a_instruction(char *assembly){
         assembly++;
     }
     unsigned int output=(unsigned int)strtol(assembly, NULL, 10);
+
+    // generate binary
    
     return  output;
 }
@@ -157,7 +159,7 @@ unsigned int c_instruction(char *assembly){
     unsigned int prefix = 111;
     char *command; 
     char *destination;
-    char *jump;
+    char *_jump;
 
     unsigned int comp;
     unsigned int dest;
@@ -172,16 +174,113 @@ unsigned int c_instruction(char *assembly){
     }else{
         dest=0b000;
         command=strtok(assembly, ';');
-        destination=strtok(NULL, ';');
+        _jump=strtok(NULL, ';');
     }
-    
-    if(strchr(command, 'M')!=NULL){
+    char *m_position=strchr(command, 'M');
+    if(m_position!=NULL){
         a=0b1;
-        *strchr(command, 'M')='A';
+        *m_position='A';
+    }else{
+        a=0b0; 
+    }
+    // determine comp
+    if(strcmp(command, '0')){
+        comp=0b101010;
+    }else if(strcmp(command, '1')){
+        comp=0b111111;
+    }else if(strcmp(command, '-1')){
+        comp=0b111010;
+    }else if(strcmp(command, 'D')){
+        comp=0b001100;
+    }else if(strcmp(command, 'A')){
+        comp=0b110000;
+    }else if(strcmp(command, '!D')){
+        comp=0b001101;
+    }else if(strcmp(command, '!A')){
+        comp=0b110001;
+    }else if(strcmp(command, '-D')){
+        comp=0b001111;
+    }else if(strcmp(command, '-A')){
+        comp=0b110011;
+    }else if(strcmp(command, 'D+1')){
+        comp=0b011111;
+    }else if(strcmp(command, 'A+1')){
+        comp=0b110111;
+    }else if(strcmp(command, 'D-1')){
+        comp=0b001110;
+    }else if(strcmp(command, 'A-1')){
+        comp=0b110010;
+    }else if(strcmp(command, 'D+A')){
+        comp=0b000010;
+    }else if(strcmp(command, 'D-A')){
+        comp=0b010011;
+    }else if(strcmp(command, 'A-D')){
+        comp=0b000111;
+    }else if(strcmp(command, 'D&A')){
+        comp=0b000000;
+    }else if(strcmp(command, 'D|A')){
+        comp=0b010101;
     }
 
+    // determine jump
+    if(dest==0){
+        if(strcmp(_jump, 'JGT')){
+            jump=0b001;
+        }else if(strcmp(_jump, 'JEQ')){
+            jump=0b0101;
+        }else if(strcmp(_jump, 'JGE')){
+            jump=0b011;
+        }else if(strcmp(_jump, 'JLT')){
+            jump=0b100;
+        }else if(strcmp(_jump, 'JNE')){
+            jump=0b101;
+        }else if(strcmp(_jump, 'JLE')){
+            jump=0b110;
+        }else if(strcmp(_jump, 'JMP')){
+            jump=0b111;
+        }
+    }
 
+    //determine dest
 
+    /* 
+    if(jump==0){
+        if(strcmp(destination, 'M')){
+            dest=0b001;
+        }else if(strcmp(destination, 'D')){
+            dest=0b010;
+        }else if(strcmp(destination, 'MD')){
+            dest=0b011;
+        }else if(strcmp(destination, 'A')){
+            dest=0b100; 
+        }else if(strcmp(destination, 'AM')){
+            dest=0b101;
+        }else if(strcmp(destination, 'AD')){
+            dest=0b110;
+        }else if(strcmp(destination, 'AMD')){
+            dest=0b111;
+        }
+
+    }
+*/
+    
+    if(strchr(destination, 'A')!=NULL){
+        dest|=1<<2;
+    }
+    if(strchr(destination, 'D')!=NULL){
+        dest|=1<<1;
+    }
+    if(strchr(destination, 'M')!=NULL){
+        dest|=1;
+    }
+
+// generate output 111 a cccccc ddd jjj
+unsigned int output = 0b0;
+output |= 111 << 13;
+output |= a << 12;
+output |= comp << 6;
+output |= dest << 3;
+output |= jump;
 
 }
 
