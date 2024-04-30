@@ -23,17 +23,17 @@ int main(){
 asm_n *asm_head=malloc(sizeof(asm_n));
 sym_t *sym_head=malloc(sizeof(sym_t));
 FILE file_pointer;
-int ml=16;
+
 
 void build_tables(asm_n *asm_head, sym_t *sym_head, FILE *source);
-void add_sym(char *label, int line, sym_t *sym_head);
+void add_sym(char *label, unsigned int line, sym_t *current);
 void output(sym_t *sym_head, asm_n *asm_head);
-unsigned int a_instruction(sym_t *sym_head, asm_n *asm_head);
-unsigned int c_instruction(sym_t *sym_head, asm_n *asm_head);
+unsigned int a_instruction(char *assembly);
+unsigned int c_instruction(char *assembly);
 int find_symbol(char *symbol);
 
 
-output(sym_t *sym_head, asm_n *asm_head);
+output(sym_head, asm_head);
 
 
 return 0; 
@@ -42,9 +42,10 @@ return 0;
 
 // build a linked list for the assembly instructions and symbol table to handle jumps.
 void build_tables(asm_n *asm_head, sym_t *sym_head, FILE *source){
-    int line=0; 
+    unsigned int line=0; 
     char *string=read_line(line); 
     char *buffer;
+    asm_n *asm_current=asm_head;
     
 
     while(read_line(line)!=NULL){
@@ -62,33 +63,24 @@ void build_tables(asm_n *asm_head, sym_t *sym_head, FILE *source){
             if(buffer[strlen(buffer)-1]==')'){
                 buffer[strlen(buffer)-1]='\0';
             }
-            add_sym(buffer, line);
-
-            //create a new node in the symbol table
-            
-        }else{
-            if(head_n==NULL){ 
-                head_n->assembly=string;
-            }
-
-        }
-        
-        
-
+            add_sym(buffer, line, sym_head);
 
         free(buffer);
         // next line
         line++;
+        }else{ 
+            // create a new node in the assembly list
+           asm_current->assembly=string;
+           asm_n *new=malloc(sizeof(asm_n));
+           asm_current->next=new;
+           asm_current=asm_current->next;
+        }
     }
-   
 }
 
 
 
-
-
-
-void add_sym(char *label, int line, sym_t *current){
+void add_sym(char *label, unsigned int line, sym_t *current){
     
     // find the last node
     while(current->next!=NULL){
@@ -107,7 +99,8 @@ void add_sym(char *label, int line, sym_t *current){
 
 void output(sym_t *sym_head, asm_n *asm_head){
     asm_n *asm_current=asm_head;
-    add_defaults(sym_t *sym_current);
+    sym_t *sym_current=sym_head;
+    add_defaults(sym_current);
     char *string; 
     char *address;
     unsigned int symbol_count=0; 
@@ -276,7 +269,7 @@ unsigned int c_instruction(char *assembly){
 
 // generate output 111 a cccccc ddd jjj
 unsigned int output = 0b0;
-output |= 111 << 13;
+output |= prefix << 13;
 output |= a << 12;
 output |= comp << 6;
 output |= dest << 3;
