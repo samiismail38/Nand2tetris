@@ -1,11 +1,17 @@
 #include<stdio.h>
+
+/*
+This solution uses the help of the solution of @jgopel on github
+Specifically the setup lends heavily from his solution since I didn't know how to implement them.
+*/
+
 #include<stdlib.h>
 
 
 typedef struct asm_n{
     char *assembly;
     int machine_code;
-    struct asm_n * next;
+    struct asm_n *next;
 }asm_n; 
 
 
@@ -17,12 +23,28 @@ typedef struct sym_t{
 }sym_t;
 
 
-int main(){
+int main(int argc, char *argv[]){
+
+char *filename;
+char default_file[]="test.asm";
+
+
+
+if(argc<2){
+    filename=malloc(strlen(default_file));
+    strcpy(filename, argv[1]);
+}else{
+    filename=malloc(strlen(argv[1]+1));
+    strcpy(filename, argv[1]);
+}
+
+
 
 // intialize the assembly linked list with first element head.
 asm_n *asm_head=malloc(sizeof(asm_n));
 sym_t *sym_head=malloc(sizeof(sym_t));
-FILE file_pointer;
+FILE *file_pointer=fopen(filename, "r");
+if(file_pointe)
 
 
 void build_tables(asm_n *asm_head, sym_t *sym_head, FILE *source);
@@ -177,59 +199,59 @@ unsigned int c_instruction(char *assembly){
         a=0b0; 
     }
     // determine comp
-    if(strcmp(command, '0')){
+    if(!strcmp(command, '0')){
         comp=0b101010;
-    }else if(strcmp(command, '1')){
+    }else if(!strcmp(command, '1')){
         comp=0b111111;
-    }else if(strcmp(command, '-1')){
+    }else if(!strcmp(command, '-1')){
         comp=0b111010;
-    }else if(strcmp(command, 'D')){
+    }else if(!strcmp(command, 'D')){
         comp=0b001100;
-    }else if(strcmp(command, 'A')){
+    }else if(!strcmp(command, 'A')){
         comp=0b110000;
-    }else if(strcmp(command, '!D')){
+    }else if(!strcmp(command, '!D')){
         comp=0b001101;
-    }else if(strcmp(command, '!A')){
+    }else if(!strcmp(command, '!A')){
         comp=0b110001;
-    }else if(strcmp(command, '-D')){
+    }else if(!strcmp(command, '-D')){
         comp=0b001111;
-    }else if(strcmp(command, '-A')){
+    }else if(!strcmp(command, '-A')){
         comp=0b110011;
-    }else if(strcmp(command, 'D+1')){
+    }else if(!strcmp(command, 'D+1')){
         comp=0b011111;
-    }else if(strcmp(command, 'A+1')){
+    }else if(!strcmp(command, 'A+1')){
         comp=0b110111;
-    }else if(strcmp(command, 'D-1')){
+    }else if(!strcmp(command, 'D-1')){
         comp=0b001110;
-    }else if(strcmp(command, 'A-1')){
+    }else if(!strcmp(command, 'A-1')){
         comp=0b110010;
-    }else if(strcmp(command, 'D+A')){
+    }else if(!strcmp(command, 'D+A')){
         comp=0b000010;
-    }else if(strcmp(command, 'D-A')){
+    }else if(!strcmp(command, 'D-A')){
         comp=0b010011;
-    }else if(strcmp(command, 'A-D')){
+    }else if(!strcmp(command, 'A-D')){
         comp=0b000111;
-    }else if(strcmp(command, 'D&A')){
+    }else if(!strcmp(command, 'D&A')){
         comp=0b000000;
-    }else if(strcmp(command, 'D|A')){
+    }else if(!strcmp(command, 'D|A')){
         comp=0b010101;
     }
 
     // determine jump
     if(dest==0){
-        if(strcmp(_jump, 'JGT')){
+        if(!strcmp(_jump, 'JGT')){
             jump=0b001;
-        }else if(strcmp(_jump, 'JEQ')){
+        }else if(!strcmp(_jump, 'JEQ')){
             jump=0b0101;
-        }else if(strcmp(_jump, 'JGE')){
+        }else if(!strcmp(_jump, 'JGE')){
             jump=0b011;
-        }else if(strcmp(_jump, 'JLT')){
+        }else if(!strcmp(_jump, 'JLT')){
             jump=0b100;
-        }else if(strcmp(_jump, 'JNE')){
+        }else if(!strcmp(_jump, 'JNE')){
             jump=0b101;
-        }else if(strcmp(_jump, 'JLE')){
+        }else if(!strcmp(_jump, 'JLE')){
             jump=0b110;
-        }else if(strcmp(_jump, 'JMP')){
+        }else if(!strcmp(_jump, 'JMP')){
             jump=0b111;
         }
     }
@@ -238,19 +260,19 @@ unsigned int c_instruction(char *assembly){
 
     /* 
     if(jump==0){
-        if(strcmp(destination, 'M')){
+        if(!strcmp(destination, 'M')){
             dest=0b001;
-        }else if(strcmp(destination, 'D')){
+        }else if(!strcmp(destination, 'D')){
             dest=0b010;
-        }else if(strcmp(destination, 'MD')){
+        }else if(!strcmp(destination, 'MD')){
             dest=0b011;
-        }else if(strcmp(destination, 'A')){
+        }else if(!strcmp(destination, 'A')){
             dest=0b100; 
-        }else if(strcmp(destination, 'AM')){
+        }else if(!strcmp(destination, 'AM')){
             dest=0b101;
-        }else if(strcmp(destination, 'AD')){
+        }else if(!strcmp(destination, 'AD')){
             dest=0b110;
-        }else if(strcmp(destination, 'AMD')){
+        }else if(!strcmp(destination, 'AMD')){
             dest=0b111;
         }
 
